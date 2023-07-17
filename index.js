@@ -3,6 +3,8 @@ const boxes = document.querySelectorAll('.box');
 const newGame = document.getElementById('options');
 let Turn;
 let gridIndex;
+let count =0;
+let winner;
 const winningPositions = [
     [0, 1, 2],
     [3, 4, 5],
@@ -13,61 +15,60 @@ const winningPositions = [
     [0, 4, 8],
     [2, 4, 6]
 ];
-function checkGame(){
-    winningPositions.forEach((position)=>{
-        if((gridIndex[position[0]]!=="" && gridIndex[position[1]]!==""&& gridIndex[position[2]]!=="")&&(gridIndex[position[0]]===gridIndex[position[1]])&&(gridIndex[position[1]]===gridIndex[position[2]])){
+function checkGame() {
+    winningPositions.forEach((position) => {
+        if ((gridIndex[position[0]] !== "" && gridIndex[position[1]] !== "" && gridIndex[position[2]] !== "") && (gridIndex[position[0]] === gridIndex[position[1]]) && (gridIndex[position[1]] === gridIndex[position[2]])) {
             boxes.forEach((box) => {
                 box.style.pointerEvents = "none";
             });
-        let winner = gridIndex[position[0]];
+            winner = gridIndex[position[0]];
             playerTurn.textContent = `Winner is ${winner}`;
             boxes[position[0]].classList.add("win");
             boxes[position[1]].classList.add("win");
             boxes[position[2]].classList.add("win");
-            newGame.style.scale="1";
+            newGame.style.scale = "1";
             return;
         }
     })
-    gameDraw();
 }
-function initGame(){
-    gridIndex = ["","","","","","","","",""];
+function initGame() {
+    gridIndex = ["", "", "", "", "", "", "", "", ""];
     Turn = "X";
     playerTurn.textContent = `Current Player: ${Turn}`;
-    boxes.forEach((box)=>{
+    boxes.forEach((box) => {
         box.textContent = "";
         box.style.pointerEvents = "auto";
         box.classList.remove("win");
     })
-    
+
 }
 initGame();
-function swapTurn(){
-    if(Turn==="X"){
-        Turn ="0";
+function swapTurn() {
+    if (Turn === "X") {
+        Turn = "0";
     }
-    else{
+    else {
         Turn = "X";
     }
 }
-function handleClick(index){
-    gridIndex[index]=Turn;
-    boxes[index].textContent=Turn;
+function handleClick(index) {
+    count++;
+    gridIndex[index] = Turn;
+    boxes[index].textContent = Turn;
     swapTurn();
     playerTurn.textContent = `Current Player: ${Turn}`;
     checkGame();
+    gameDraw();
 }
-boxes.forEach((box,index)=>{
-    box.addEventListener('click',()=>{
+boxes.forEach((box, index) => {
+    box.addEventListener('click', () => {
         handleClick(index);
     })
 })
 
-function gameDraw(){
-    for (let index of gridIndex) {
-        if((index==="")){
-            return ;
-        }
+function gameDraw() {
+    if(count!==9 || winner!==""){
+        return ;
     }
     boxes.forEach((box) => {
         box.style.pointerEvents = "none";
@@ -75,6 +76,6 @@ function gameDraw(){
     playerTurn.textContent = "Game Draw!!";
     newGame.style.scale = "1";
 }
-newGame.onclick = ()=>{
+newGame.onclick = () => {
     initGame();
 }
